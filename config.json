@@ -4,8 +4,9 @@
    "server": "https://rally1.rallydev.com",
    "sdk": "2.0rc3",
    "javascript": [
-      "App.js",
-      "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"
+      "bower_components/angular/angular.js",
+      "bower_components/highcharts/highcharts-all.js",
+      "App.js"
    ],
    "html": [
       "Body.html"
