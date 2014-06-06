@@ -1,8 +1,15 @@
 Ext.define('CustomApp', {
     extend: 'Rally.app.App',
     componentCls: 'app',
-    items:{ html:'<a href="https://help.rallydev.com/apps/2.0rc3/doc/">App SDK 2.0rc3 Docs</a>'},
+    items:{ html:''},
     launch: function() {
         //Write app code here
+        angular.bootstrap(document.body, ['insights.movers']);
     }
 });
+
+var module = angular.module('insights.movers', []);
+module.controller('RootCtrl', function($scope){
+	$scope.test = 'my value';
+	console.log('test');
+})
