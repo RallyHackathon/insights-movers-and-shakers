@@ -13,7 +13,7 @@ angular.module('insights.movers.projects', []).service('projectLoader', function
 			var toLoad = queue.shift()
 			self.loadChildren(toLoad).then(function(children){
 				if(_.size(children) === 0){
-					leaves.push(_.extend({name:toLoad.Name, projectId:toLoad.ObjectID, workspaceId: workspace.ObjectID}));
+					leaves.push(_.extend(toLoad, {name:toLoad.Name, projectId:toLoad.ObjectID, workspaceId: workspace.ObjectID}));
 				} else {
 					_.each(children, function(child){ 
 						queue.push(child) 

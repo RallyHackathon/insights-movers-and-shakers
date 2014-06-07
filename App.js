@@ -45,8 +45,11 @@ module.run(function($rootScope, $timeout){
 });
 
 module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader, variationCalculator){
+	$scope.age = function(creationDate){
+		return moment.duration(moment(new Date).diff(moment(creationDate))).humanize()
+	};
 	$scope.toFixed = function(x){
-		return (isFinite(x)) ? x.toFixed(0) : x
+		return (isFinite(x)) ? x.toFixed(0) : ''
 	};
 	var createHighchartsConfig = function(project){
 		project.differenceChartConfig = {
@@ -95,7 +98,7 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 	                enabled: false
 	            },
 	            tooltip: {
-	                backgroundColor: null,
+	                backgroundColor: '#ffffff',
 	                borderWidth: 0,
 	                shadow: false,
 	                useHTML: true,

@@ -11,6 +11,7 @@
 		<thead>
 			<tr>
 				<th>Project Name</th>
+				<th>Project Age</th>
 				<th>{{context.t0}}</th>
 				<th>{{context.t1}}</th>
 				<th>% Variation</th>
@@ -20,6 +21,7 @@
 		<tbody>
 			<tr ng-repeat="project in sortedProjects">
 				<td><a target="_blank" ng-href="https://rally1.rallydev.com/insight/perform?workspaceoid={{project.workspaceId}}&projectoid={{project.projectId}}&scorecardConfig={{context.scorecard}}">{{project.name}}</a></td>
+				<td>{{age(project.CreationDate)}}</td>
 				<td>{{project.variation.t0}}</td>
 				<td>{{project.variation.t1}}</td>
 				<td>{{toFixed(project.variation.percentage)}}</td>

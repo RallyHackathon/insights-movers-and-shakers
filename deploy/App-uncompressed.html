@@ -1687,8 +1687,11 @@ module.run(function($rootScope, $timeout){
 });
 
 module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader, variationCalculator){
+	$scope.age = function(creationDate){
+		return moment.duration(moment(new Date).diff(moment(creationDate))).humanize()
+	};
 	$scope.toFixed = function(x){
-		return (isFinite(x)) ? x.toFixed(0) : x
+		return (isFinite(x)) ? x.toFixed(0) : ''
 	};
 	var createHighchartsConfig = function(project){
 		project.differenceChartConfig = {
@@ -1737,7 +1740,7 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 	                enabled: false
 	            },
 	            tooltip: {
-	                backgroundColor: null,
+	                backgroundColor: '#ffffff',
 	                borderWidth: 0,
 	                shadow: false,
 	                useHTML: true,
@@ -2174,7 +2177,7 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 			var toLoad = queue.shift()
 			self.loadChildren(toLoad).then(function(children){
 				if(_.size(children) === 0){
-					leaves.push(_.extend({name:toLoad.Name, projectId:toLoad.ObjectID, workspaceId: workspace.ObjectID}));
+					leaves.push(_.extend(toLoad, {name:toLoad.Name, projectId:toLoad.ObjectID, workspaceId: workspace.ObjectID}));
 				} else {
 					_.each(children, function(child){ 
 						queue.push(child) 
@@ -8435,6 +8438,7 @@ h3 select {
 		<thead>
 			<tr>
 				<th>Project Name</th>
+				<th>Project Age</th>
 				<th>{{context.t0}}</th>
 				<th>{{context.t1}}</th>
 				<th>% Variation</th>
@@ -8444,6 +8448,7 @@ h3 select {
 		<tbody>
 			<tr ng-repeat="project in sortedProjects">
 				<td><a target="_blank" ng-href="https://rally1.rallydev.com/insight/perform?workspaceoid={{project.workspaceId}}&projectoid={{project.projectId}}&scorecardConfig={{context.scorecard}}">{{project.name}}</a></td>
+				<td>{{age(project.CreationDate)}}</td>
 				<td>{{project.variation.t0}}</td>
 				<td>{{project.variation.t1}}</td>
 				<td>{{toFixed(project.variation.percentage)}}</td>
