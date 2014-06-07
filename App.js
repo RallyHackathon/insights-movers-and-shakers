@@ -51,8 +51,8 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 	$scope.toFixed = function(x){
 		return (isFinite(x)) ? x.toFixed(0) : ''
 	};
-	var createHighchartsConfig = function(project){
-		project.differenceChartConfig = {
+	var createHighchartsConfig = function(seriesName, series){
+		return {
 			options: {
 				chart: {
 	                backgroundColor: null,
@@ -136,8 +136,8 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 	            }
             },
             series: [{
-            	name: 'Workspace Delta',
-            	data: project.variation.differences
+            	name: seriesName,
+            	data: series
             }],
             size: {
             	height: 20,
@@ -157,7 +157,10 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 				}).reverse();
 				return $scope.sortedProjects;
 			}).then(function(projects){
-				_.each(projects, createHighchartsConfig);
+				_.each(projects, function(project){
+					project.differenceChartConfig = createHighchartsConfig('Workspace Delta', project.variation.differences);
+					project.scoresChartConfig = createHighchartsConfig('Project Scores', project.variation.projectScores);
+				});
 			})
 		}
 	}

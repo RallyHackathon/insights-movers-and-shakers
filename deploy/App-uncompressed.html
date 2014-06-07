@@ -1693,8 +1693,8 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 	$scope.toFixed = function(x){
 		return (isFinite(x)) ? x.toFixed(0) : ''
 	};
-	var createHighchartsConfig = function(project){
-		project.differenceChartConfig = {
+	var createHighchartsConfig = function(seriesName, series){
+		return {
 			options: {
 				chart: {
 	                backgroundColor: null,
@@ -1778,8 +1778,8 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 	            }
             },
             series: [{
-            	name: 'Workspace Delta',
-            	data: project.variation.differences
+            	name: seriesName,
+            	data: series
             }],
             size: {
             	height: 20,
@@ -1799,7 +1799,10 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 				}).reverse();
 				return $scope.sortedProjects;
 			}).then(function(projects){
-				_.each(projects, createHighchartsConfig);
+				_.each(projects, function(project){
+					project.differenceChartConfig = createHighchartsConfig('Workspace Delta', project.variation.differences);
+					project.scoresChartConfig = createHighchartsConfig('Project Scores', project.variation.projectScores);
+				});
 			})
 		}
 	}
@@ -8421,6 +8424,9 @@ h3 select {
 .difference-chart {
   width: 120px;
 }
+.scores-chart {
+  width: 120px;
+}
 
     </style>
 </head>
@@ -8442,6 +8448,7 @@ h3 select {
 				<th>{{context.t0}}</th>
 				<th>{{context.t1}}</th>
 				<th>% Variation</th>
+				<th>Project Scores</th>
 				<th>Workspace Delta</th>
 			</tr>
 		</thead>
@@ -8452,6 +8459,11 @@ h3 select {
 				<td>{{project.variation.t0}}</td>
 				<td>{{project.variation.t1}}</td>
 				<td>{{toFixed(project.variation.percentage)}}</td>
+				<td>
+					<div class="scores-chart">
+						<highchart config="project.scoresChartConfig"></highchart>
+					</div>
+				</td>
 				<td>
 					<div class="difference-chart">
 						<highchart config="project.differenceChartConfig"></highchart>
