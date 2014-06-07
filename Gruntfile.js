@@ -8,6 +8,7 @@ if (module) {
         var config, debug, environment, spec;
         grunt.loadNpmTasks('grunt-contrib-jasmine');
         grunt.loadNpmTasks('grunt-contrib-jshint');
+        grunt.loadNpmTasks('grunt-karma');
 
         grunt.registerTask('test', ['jshint','jasmine']);
         grunt.registerTask('default', ['test']);
@@ -31,6 +32,11 @@ if (module) {
             },
             jshint:{
               all: ['test/**/*.js']
+            },
+            karma: {
+              unit: {
+                configFile: 'karma.conf.js',
+              }
             }
         });
   }
