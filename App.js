@@ -20,10 +20,12 @@ var module = angular.module('insights.movers', [
 	'insights.movers.projects',
 	'insights.movers.api'
 ]);
-module.run(function($rootScope){
+module.run(function($rootScope, $timeout){
 	$rootScope.app = $rootScope.app || {};
 	$rootScope.app.scorecard = 'balanced';
-	$('html').removeClass('x-viewport');
+	$timeout(function(){
+		$('html').removeClass('x-viewport');
+	});
 });
 
 module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader, variationCalculator){

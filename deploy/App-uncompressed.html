@@ -1362,9 +1362,12 @@ var module = angular.module('insights.movers', [
 	'insights.movers.projects',
 	'insights.movers.api'
 ]);
-module.run(function($rootScope){
+module.run(function($rootScope, $timeout){
 	$rootScope.app = $rootScope.app || {};
 	$rootScope.app.scorecard = 'balanced';
+	$timeout(function(){
+		$('html').removeClass('x-viewport');
+	});
 });
 
 module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader, variationCalculator){
@@ -1726,10 +1729,6 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 		});
 		return deferred.promise;
 
-		// // TODO Load the projects. yay.
-		// return $q.when([
-		// 	_.extend({name:rootProject.Name, projectId:rootProject.ObjectID, workspaceId: workspace.ObjectID}]
-		// );
 	};
 
 	this.loadChildren = function(project){
