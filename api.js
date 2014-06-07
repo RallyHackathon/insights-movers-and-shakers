@@ -1,10 +1,21 @@
 
-angular.module('insights.movers.api', []).service('insightsApi', function($http, $q){
+angular.module('insights.movers.api', [])
+.config(function($httpProvider) {
+  //Enable cross domain calls
+  $httpProvider.defaults.useXDomain = true;
+
+  //Remove the header used to identify ajax call  that would prevent CORS from working
+  delete $httpProvider.defaults.headers.common['X-Requested-With'];
+})
+.service('insightsApi', function($http, $q, $log){
 
 	// Sample Query
 	// https://rally1.rallydev.com/insight/scorecardData?end-date=2014-06&granularity=quarter&projectId=7427420584&scorecardConfigId=balanced_all_visible&start-date=2013-05&workspaceId=41529001
 	this.loadData = function(scorecard, projects){
-		return $q.all(_.each(projects, function(project){
+
+		$log.debug('querying insights api for projects: ', _.pluck(projects, 'name'));
+		return $q.all(_.map(projects, function(project){
+			$log.debug('query for project: ', project.name)
 			var params = {
 				'scorecardConfigId': 'balanced',
 				'start-date': '2014-01', // TODO Base these dates on current Now() - 1 month
@@ -14,13 +25,18 @@ angular.module('insights.movers.api', []).service('insightsApi', function($http,
 				'workspaceId': project.workspaceId
 
 			};
-			return $q.when(sampleData);
-			// return $http({
-			// 	url: 'https://rally1.rallydev.com/insight/scorecardData',
-			// 	method: 'GET',
-			// 	params: params
+			
+			// return $q.when(sampleData).then(function(data){
+			// 	project.metrics = data;
 			// });
-		}))
+			return $http({
+				url: 'https://rally1.rallydev.com/insight/scorecardData',
+				method: 'GET',
+				params: params
+			}).then(function(response){
+				return response.data
+			});
+		}));
 	};
 });
 

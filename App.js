@@ -9,7 +9,9 @@ Ext.define('CustomApp', {
         var scope = angular.element(document.body).scope();
         scope.app = this.getContext().map.map;
         scope.$digest();
-        angular.element(document.body).find('#root').css('display', 'visible')
+        $('#root').attr('style', 'display:block;')
+        $('body').removeClass('x-body')
+        $('html').removeClass('x-viewport')
     }
 });
 
@@ -21,108 +23,30 @@ var module = angular.module('insights.movers', [
 module.run(function($rootScope){
 	$rootScope.app = $rootScope.app || {};
 	$rootScope.app.scorecard = 'balanced';
+	$('html').removeClass('x-viewport');
 });
 
-module.controller('RootCtrl', function($scope, insightsApi, projectLoader, variationCalculator){
+module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader, variationCalculator){
 
-	$scope.chartConfig = {
-        chart: {
-            backgroundColor: null,
-            borderWidth: 0,
-            type: 'area',
-            margin: [2, 0, 2, 0],
-            width: 120,
-            height: 20,
-            style: {
-                overflow: 'visible'
-            },
-            skipClone: true
-        },
-        title: {
-            text: ''
-        },
-        credits: {
-            enabled: false
-        },
-        xAxis: {
-            labels: {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            startOnTick: false,
-            endOnTick: false,
-            tickPositions: []
-        },
-        yAxis: {
-            endOnTick: false,
-            startOnTick: false,
-            labels: {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            tickPositions: [0]
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-            backgroundColor: null,
-            borderWidth: 0,
-            shadow: false,
-            useHTML: true,
-            hideDelay: 0,
-            shared: true,
-            padding: 0,
-            positioner: function (w, h, point) {
-                return { x: point.plotX - w / 2, y: point.plotY - h};
-            }
-        },
-        plotOptions: {
-            series: {
-                animation: false,
-                lineWidth: 1,
-                shadow: false,
-                states: {
-                    hover: {
-                        lineWidth: 1
-                    }
-                },
-                marker: {
-                    radius: 1,
-                    states: {
-                        hover: {
-                            radius: 2
-                        }
-                    }
-                },
-                fillOpacity: 0.25
-            },
-            column: {
-                negativeColor: '#910000',
-                borderColor: 'silver'
-            }
-        }
-    };
+
 	$scope.$watch('metrics', function(metrics){
 		if(metrics){
 			$scope.progress = "calculator";
-			variationCalculator.getSeries(metrics).then(function(series){
+			variationCalculator.calculateVariationsForProjects($scope.projects).then(function(variations){
 				$scope.progress = null;
-				$scope.series = series;
+				$scope.variations = variations;
+				$log.debug('calculator finished');
 			})
 		}
 	});
 
 	$scope.$watchCollection('projects', function(projects){		
-		if(_.length(projects) > 0){
+		if(_.size(projects) > 0){
 			$scope.progress = "metrics";
-			insightsApi.loadData($scope.app.scorecard, projects).then(function(data){
+			insightsApi.loadData($scope.app.scorecard, $scope.projects).then(function(data){
 				$scope.progress = null;
 				$scope.metrics = data;
+				$log.debug('insights api finished');
 			});
 		}
 	})
@@ -132,7 +56,8 @@ module.controller('RootCtrl', function($scope, insightsApi, projectLoader, varia
 			$scope.progress = "projects";
 			projectLoader.getScopedProjects($scope.app.project, $scope.app.workspace).then(function(projects){
 				$scope.progress = null;
-				$scope.projectsInScope = projects;
+				$scope.projects = projects;
+				$log.debug('loaded projects');
 			})
 		}
 	})

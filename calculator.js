@@ -1,22 +1,18 @@
-angular.module('insights.movers.calculator', []).service('variationCalculator', function(){
+angular.module('insights.movers.calculator', []).service('variationCalculator', function($q){
+
+	this.calculateVariationsForProjects = function(projects){
+		return $q.when(_.map(projects, function(project){
+			var variation = this.calculateVariationForProject(project.metrics);
+			project.variation = variation;
+			return variation;
+		}, this));
+	};
 
 	// For each project, calculate a variation against the workspace
 	this.calculateVariationForProject = function(projectData){
-		// 
-
-		// _(responses)
-		// .map(function(response){_.first(response.scopes)}) // Get project scopes
-		// .map(function(scope){return scope.dataPoints}) // Get data points
-		// .pluck('Quality')
-		// .pluck('score')
+		return Math.random();
 
 	};
-
-	// Array of data objects for projects
-	this.createHighChartsSeries = function(projectsData){
-
-	};
-
 
 });
 

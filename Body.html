@@ -1,4 +1,10 @@
 <div style="display:none;" ng-controller="RootCtrl" id="root">
 	<h3>Movers</h3>
-	<highchart id="movers-chart" config="chartConfig"></highchart>
+	<ul>
+		<li ng-repeat="project in projects">
+			<span>{{project.name}} : {{project.variation}}</span>
+		</li>
+	</ul>
+	<div ng-bind="progress"/>
+
 </div>
