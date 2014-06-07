@@ -6,7 +6,8 @@
    "javascript": [
       "bower_components/angular/angular.js",
       "bower_components/highcharts/highcharts-all.js",
-      "App.js"
+      "App.js",
+      "calculator.js"
    ],
    "html": [
       "Body.html"
