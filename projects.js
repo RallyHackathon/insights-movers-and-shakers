@@ -33,7 +33,7 @@ angular.module('insights.movers.projects', []).service('projectLoader', function
 
 	this.loadChildren = function(project){
 		return $http({
-			url: 'https://rally1.rallydev.com/slm/webservice/v2.0/project/'+project.ObjectID+'/Children',
+			url: 'https://rally1.rallydev.com/slm/webservice/v2.0/project/'+project.ObjectID+'/Children?query=(State != "Closed")',
 			method: 'JSONP',
 			params: {
 				'jsonp': 'JSON_CALLBACK'
