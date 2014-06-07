@@ -1,10 +1,26 @@
 <div style="display:none;" ng-controller="RootCtrl" id="root">
+	<select ng-model="context.dimension" ng-options="value for value in dimensions"></select>
+	<div ng-if="progress"><span>Loading: </span><span ng-bind="progress"/></div>
 	<h3>Movers</h3>
-	<ul>
-		<li ng-repeat="project in projects">
-			<span>{{project.name}} : {{project.variation}}</span>
-		</li>
-	</ul>
-	<div ng-bind="progress"/>
-
+	
+	<table>
+		<thead>
+			<tr>
+				<td>Project Name</td>
+				<td>Project Scores</td>
+				<td>Workspace Scores</td>
+				<td>Delta</td>
+				<td>Variation</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="project in sortedProjects">
+				<td><a target="_blank" ng-href="https://rally1.rallydev.com/insight/perform?workspaceoid={{project.workspaceId}}&projectoid={{project.projectId}}&scorecardConfig={{context.scorecard}}">{{project.name}}</a></td>
+				<td>Project Scores</td>
+				<td>Workspace Scores</td>
+				<td>Delta</td>
+				<td>{{project.variation.percentage}}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

@@ -1,17 +1,56 @@
 angular.module('insights.movers.calculator', []).service('variationCalculator', function($q){
 
-	this.calculateVariationsForProjects = function(projects){
+	this.calculateVariationsForProjects = function(projects, dimension){
 		return $q.when(_.map(projects, function(project){
-			var variation = this.calculateVariationForProject(project.metrics);
+			var variation = this.calculateVariationForProject(project.metrics, dimension);
 			project.variation = variation;
 			return variation;
 		}, this));
 	};
 
 	// For each project, calculate a variation against the workspace
-	this.calculateVariationForProject = function(projectData){
-		return Math.random();
+	this.calculateVariationForProject = function(projectData, dimension){
+		var scores = _.map(projectData.scopes, function(scope){
+			return this.getDimensionScore(scope, dimension);
+		}, this);
+		var projectScores = scores[0];
+		var workspaceScores = scores[1];
+		var differences = this.getDifferenceFromScores(projectScores, workspaceScores);
 
+		// TODO support variation for more than 2 time periods
+		// We're being careful here to only use the most recent time points.
+		var t0 = _.last(_.initial(projectScores));
+		var t1 = _.last(projectScores);
+		var percentage = this.calculateVariation(t0, t1);
+
+		return {
+			percentageAbs: Math.abs(percentage),
+			percentage: percentage,
+			projectScores: scores[0],
+			workspaceScores: scores[1],
+			differences: differences,
+			t1: t1,
+			t0: t0
+		}
+	};
+
+	this.getDimensionScore = function(scope, dimension) {
+		var scores = _(scope.dataPoints).pluck('data').pluck(dimension).pluck('score').value();
+		return scores;
+	};
+
+	this.getDifferenceFromScores = function(projectScores, workspaceScores) {
+		return _.zip(projectScores, workspaceScores).map(function(tuple){
+			var projectScore = tuple[0];
+			var workspaceScore = tuple[1];
+			return workspaceScore-projectScore;
+		});
+	};
+
+	this.calculateVariation = function(t1, t2){
+		// t1 == 1 and t2 == 2
+		// 2/1 - 1
+		return ( ( t2 / t1 ) - 1 ) * 100
 	};
 
 });

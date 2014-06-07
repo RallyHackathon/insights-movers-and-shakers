@@ -3,7 +3,6 @@ Ext.define('CustomApp', {
     componentCls: 'app',
     items:{ html:''},
     launch: function() {
-        debugger
         //Write app code here
         angular.bootstrap(document.body, ['insights.movers']);
         var scope = angular.element(document.body).scope();
@@ -22,7 +21,22 @@ var module = angular.module('insights.movers', [
 ]);
 module.run(function($rootScope, $timeout){
 	$rootScope.app = $rootScope.app || {};
-	$rootScope.app.scorecard = 'balanced';
+	$rootScope.context = {
+		dimension: 'Quality',
+		scorecard: 'balanced',
+		endDate: moment().format('YYYY-MM'),
+		startDate: moment().subtract('months', 2).format('YYYY-MM')
+
+	}
+	
+	$rootScope.dimensions = [
+		'Quality',
+		'Productivity',
+		'Responsiveness',
+		'Predictability'
+	];
+
+	$rootScope.dimension = 'Quality'
 	$timeout(function(){
 		$('html').removeClass('x-viewport');
 	});
@@ -30,22 +44,29 @@ module.run(function($rootScope, $timeout){
 
 module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader, variationCalculator){
 
-
-	$scope.$watch('metrics', function(metrics){
-		if(metrics){
+	var recalc = function(){
+		if($scope.metrics && $scope.context.scorecard){
 			$scope.progress = "calculator";
-			variationCalculator.calculateVariationsForProjects($scope.projects).then(function(variations){
+			variationCalculator.calculateVariationsForProjects($scope.projects, $scope.context.dimension).then(function(variations){
 				$scope.progress = null;
 				$scope.variations = variations;
 				$log.debug('calculator finished');
+				$scope.sortedProjects = _.sortBy($scope.projects, function(project){
+					return (isFinite(project.variation.percentageAbs)) ? project.variation.percentageAbs : null;
+				}).reverse();
 			})
 		}
-	});
+	}
+
+
+	$scope.$watch('metrics', recalc);
+	$scope.$watch('context', recalc, true);
 
 	$scope.$watchCollection('projects', function(projects){		
 		if(_.size(projects) > 0){
 			$scope.progress = "metrics";
-			insightsApi.loadData($scope.app.scorecard, $scope.projects).then(function(data){
+			var options = {startDate: $scope.context.startDate, endDate: $scope.context.endDate};
+			insightsApi.loadData($scope.context.scorecard, $scope.projects, options).then(function(data){
 				$scope.progress = null;
 				$scope.metrics = data;
 				$log.debug('insights api finished');

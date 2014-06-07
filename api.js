@@ -11,15 +11,16 @@ angular.module('insights.movers.api', [])
 
 	// Sample Query
 	// https://rally1.rallydev.com/insight/scorecardData?end-date=2014-06&granularity=quarter&projectId=7427420584&scorecardConfigId=balanced_all_visible&start-date=2013-05&workspaceId=41529001
-	this.loadData = function(scorecard, projects){
+	this.loadData = function(scorecard, projects, options){
 
 		$log.debug('querying insights api for projects: ', _.pluck(projects, 'name'));
 		return $q.all(_.map(projects, function(project){
+			
 			$log.debug('query for project: ', project.name)
 			var params = {
 				'scorecardConfigId': 'balanced',
-				'start-date': '2014-01', // TODO Base these dates on current Now() - 1 month
-				'end-date': '2014-01',
+				'start-date': options.startDate, // TODO Base these dates on current Now() - 1 month
+				'end-date': options.endDate,
 				'granularity': 'month',
 				'projectId': project.projectId,
 				'workspaceId': project.workspaceId
@@ -34,7 +35,9 @@ angular.module('insights.movers.api', [])
 				method: 'GET',
 				params: params
 			}).then(function(response){
-				return response.data
+				var metrics = response.data;
+				project.metrics = metrics;
+				return metrics;
 			});
 		}));
 	};

@@ -7,6 +7,7 @@
       "bower_components/jquery/dist/jquery.min.js",
       "bower_components/angular/angular.min.js",
       "bower_components/async/lib/async.js",
+      "bower_components/momentjs/min/moment.min.js",
       "App.js",
       "calculator.js",
       "projects.js",
