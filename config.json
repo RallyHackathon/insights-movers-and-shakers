@@ -4,10 +4,13 @@
    "server": "https://rally1.rallydev.com",
    "sdk": "2.0rc3",
    "javascript": [
+      "bower_components/jquery/dist/jquery.js",
       "bower_components/angular/angular.js",
       "bower_components/highcharts/highcharts-all.js",
       "App.js",
-      "calculator.js"
+      "calculator.js",
+      "projects.js",
+      "insightsApi.js"
    ],
    "html": [
       "Body.html"

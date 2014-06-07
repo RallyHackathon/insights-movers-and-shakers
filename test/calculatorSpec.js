@@ -24,7 +24,7 @@ describe('insights.movers.calculator', function(){
 						{
 							data: {
 								'Quality': {
-									score: 1
+									score: 2
 								}
 							},
 							month: '2014-01'
@@ -35,6 +35,23 @@ describe('insights.movers.calculator', function(){
 		}
 	}))
 	
+	describe('getDimensionScores', function(){
+		
+		it('should pluck out the dimension scores and return an array', function(){
+			var result = this.variationCalculator.getDimensionScores(this.projectData.scopes[0], 'Quality');
+			expect(result).toEqual(['1'])
+		});
+		
+	});
+
+	describe('getDifferenceFromScores', function(){
+		
+		it('should calculate the difference between project and workspace scores', function(){
+			var result = this.variationCalculator.getDifferenceFromScores([1,2,3], [4,5,6]);
+			expect(result).toEqual([3,3,3])
+		});
+	});
+
 	describe('calculateVariationForProject', function(){
 
 		it('should calculate the difference relative to the workspace average', function(){

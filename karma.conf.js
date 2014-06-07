@@ -15,6 +15,8 @@ module.exports = function(config) {
 		files: bower_components.concat([			
 			'App.js',
 			'calculator.js',
+			'api.js',
+			'projects.js',
 			'test/**/*Spec.js'
 		]),
 
