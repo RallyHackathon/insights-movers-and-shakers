@@ -17,6 +17,7 @@
       "Body.html"
    ],
    "css": [
+      "bower_components/bootstrap/dist/css/bootstrap.min.css",
       "app.css"
    ]
 }

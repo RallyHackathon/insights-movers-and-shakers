@@ -1,25 +1,26 @@
 <div style="display:none;" ng-controller="RootCtrl" id="root">
-	<select ng-model="context.dimension" ng-options="value for value in dimensions"></select>
-	<div ng-if="progress"><span>Loading: </span><span ng-bind="progress"/></div>
-	<h3>Movers</h3>
 	
-	<table>
+	<div ng-if="progress"><span>Loading: </span><span ng-bind="progress"/></div>
+	<h3>
+		<span>Movers</span>
+		<select ng-model="context.dimension" ng-options="value for value in dimensions"></select>
+	</h3>
+	
+	<table class="table">
 		<thead>
 			<tr>
-				<td>Project Name</td>
-				<td>Project Scores</td>
-				<td>Workspace Scores</td>
-				<td>Delta</td>
-				<td>Variation</td>
+				<th>Project Name</th>
+				<th>{{context.t0}}</th>
+				<th>{{context.t1}}</th>
+				<th>% Variation</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="project in sortedProjects">
 				<td><a target="_blank" ng-href="https://rally1.rallydev.com/insight/perform?workspaceoid={{project.workspaceId}}&projectoid={{project.projectId}}&scorecardConfig={{context.scorecard}}">{{project.name}}</a></td>
-				<td>Project Scores</td>
-				<td>Workspace Scores</td>
-				<td>Delta</td>
-				<td>{{project.variation.percentage}}</td>
+				<td>{{project.variation.t0}}</td>
+				<td>{{project.variation.t1}}</td>
+				<td>{{toFixed(project.variation.percentage)}}</td>
 			</tr>
 		</tbody>
 	</table>

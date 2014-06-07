@@ -25,24 +25,29 @@ module.run(function($rootScope, $timeout){
 		dimension: 'Quality',
 		scorecard: 'balanced',
 		endDate: moment().format('YYYY-MM'),
-		startDate: moment().subtract('months', 2).format('YYYY-MM')
-
+		startDate: moment().subtract('months', 4).format('YYYY-MM'),
+		t0: moment().subtract('months', 2).format('YYYY-MM'),
+		t1: moment().subtract('months', 1).format('YYYY-MM')
 	}
 	
 	$rootScope.dimensions = [
+		'OverallPerformance',
 		'Quality',
 		'Productivity',
 		'Responsiveness',
 		'Predictability'
 	];
 
-	$rootScope.dimension = 'Quality'
+	$rootScope.dimension = 'OverallPerformance';
 	$timeout(function(){
 		$('html').removeClass('x-viewport');
 	});
 });
 
 module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader, variationCalculator){
+	$scope.toFixed = function(x){
+		return (isFinite(x)) ? x.toFixed(0) : x
+	};
 
 	var recalc = function(){
 		if($scope.metrics && $scope.context.scorecard){

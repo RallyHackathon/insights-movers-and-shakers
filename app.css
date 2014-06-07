@@ -2,3 +2,8 @@
      /* Add app styles here */
 	display: none;
 }
+
+h3 select {
+	margin-left: 20px;
+	vertical-align: middle;
+}
