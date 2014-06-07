@@ -1693,13 +1693,13 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 	$scope.toFixed = function(x){
 		return (isFinite(x)) ? x.toFixed(0) : ''
 	};
-	var createHighchartsConfig = function(seriesName, series){
+	var createHighchartsConfig = function(seriesName, series, type){
 		return {
 			options: {
 				chart: {
 	                backgroundColor: null,
 	                borderWidth: 0,
-	                type: 'column',
+	                type: type,
 	                margin: [2, 0, 2, 0],
 	                width: 120,
 	                height: 20,
@@ -1800,8 +1800,8 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 				return $scope.sortedProjects;
 			}).then(function(projects){
 				_.each(projects, function(project){
-					project.differenceChartConfig = createHighchartsConfig('Workspace Delta', project.variation.differences);
-					project.scoresChartConfig = createHighchartsConfig('Project Scores', project.variation.projectScores);
+					project.differenceChartConfig = createHighchartsConfig('Workspace Delta', project.variation.differences, 'column');
+					project.scoresChartConfig = createHighchartsConfig('Project Scores', project.variation.projectScores, 'line');
 				});
 			})
 		}
