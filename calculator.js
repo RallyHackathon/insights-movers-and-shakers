@@ -43,7 +43,7 @@ angular.module('insights.movers.calculator', []).service('variationCalculator', 
 		return _.zip(projectScores, workspaceScores).map(function(tuple){
 			var projectScore = tuple[0];
 			var workspaceScore = tuple[1];
-			return workspaceScore-projectScore;
+			return projectScore-workspaceScore;
 		});
 	};
 

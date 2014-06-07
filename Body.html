@@ -4,6 +4,7 @@
 	<h3>
 		<span>Movers</span>
 		<select ng-model="context.dimension" ng-options="value for value in dimensions"></select>
+
 	</h3>
 	
 	<table class="table">
@@ -13,6 +14,7 @@
 				<th>{{context.t0}}</th>
 				<th>{{context.t1}}</th>
 				<th>% Variation</th>
+				<th>Workspace Delta</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -21,6 +23,11 @@
 				<td>{{project.variation.t0}}</td>
 				<td>{{project.variation.t1}}</td>
 				<td>{{toFixed(project.variation.percentage)}}</td>
+				<td>
+					<div class="difference-chart">
+						<highchart config="project.differenceChartConfig"></highchart>
+					</div>
+				</td>
 			</tr>
 		</tbody>
 	</table>

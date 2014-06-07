@@ -17,12 +17,13 @@ Ext.define('CustomApp', {
 var module = angular.module('insights.movers', [
 	'insights.movers.calculator',
 	'insights.movers.projects',
-	'insights.movers.api'
+	'insights.movers.api',
+	'highcharts-ng'
 ]);
 module.run(function($rootScope, $timeout){
 	$rootScope.app = $rootScope.app || {};
 	$rootScope.context = {
-		dimension: 'Quality',
+		dimension: 'OverallPerformance',
 		scorecard: 'balanced',
 		endDate: moment().format('YYYY-MM'),
 		startDate: moment().subtract('months', 4).format('YYYY-MM'),
@@ -38,7 +39,6 @@ module.run(function($rootScope, $timeout){
 		'Predictability'
 	];
 
-	$rootScope.dimension = 'OverallPerformance';
 	$timeout(function(){
 		$('html').removeClass('x-viewport');
 	});
@@ -48,7 +48,100 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 	$scope.toFixed = function(x){
 		return (isFinite(x)) ? x.toFixed(0) : x
 	};
-
+	var createHighchartsConfig = function(project){
+		project.differenceChartConfig = {
+			options: {
+				chart: {
+	                backgroundColor: null,
+	                borderWidth: 0,
+	                type: 'column',
+	                margin: [2, 0, 2, 0],
+	                width: 120,
+	                height: 20,
+	                style: {
+	                    overflow: 'visible'
+	                },
+	                skipClone: true
+	            },
+	            title: {
+	                text: ''
+	            },
+	            credits: {
+	                enabled: false
+	            },
+	            xAxis: {
+	                labels: {
+	                    enabled: false
+	                },
+	                title: {
+	                    text: null
+	                },
+	                startOnTick: false,
+	                endOnTick: false,
+	                tickPositions: []
+	            },
+	            yAxis: {
+	                endOnTick: false,
+	                startOnTick: false,
+	                labels: {
+	                    enabled: false
+	                },
+	                title: {
+	                    text: null
+	                },
+	                tickPositions: [0]
+	            },
+	            legend: {
+	                enabled: false
+	            },
+	            tooltip: {
+	                backgroundColor: null,
+	                borderWidth: 0,
+	                shadow: false,
+	                useHTML: true,
+	                hideDelay: 0,
+	                shared: true,
+	                padding: 0,
+	                positioner: function (w, h, point) {
+	                    return { x: point.plotX - w / 2, y: point.plotY - h};
+	                }
+	            },
+	            plotOptions: {
+	                series: {
+	                    animation: false,
+	                    lineWidth: 1,
+	                    shadow: false,
+	                    states: {
+	                        hover: {
+	                            lineWidth: 1
+	                        }
+	                    },
+	                    marker: {
+	                        radius: 1,
+	                        states: {
+	                            hover: {
+	                                radius: 2
+	                            }
+	                        }
+	                    },
+	                    fillOpacity: 0.25
+	                },
+	                column: {
+	                    negativeColor: '#910000',
+	                    borderColor: 'silver'
+	                }
+	            }
+            },
+            series: [{
+            	name: 'Workspace Delta',
+            	data: project.variation.differences
+            }],
+            size: {
+            	height: 20,
+            	width: 120
+            }
+        };
+	};
 	var recalc = function(){
 		if($scope.metrics && $scope.context.scorecard){
 			$scope.progress = "calculator";
@@ -59,6 +152,9 @@ module.controller('RootCtrl', function($scope, $log, insightsApi, projectLoader,
 				$scope.sortedProjects = _.sortBy($scope.projects, function(project){
 					return (isFinite(project.variation.percentageAbs)) ? project.variation.percentageAbs : null;
 				}).reverse();
+				return $scope.sortedProjects;
+			}).then(function(projects){
+				_.each(projects, createHighchartsConfig);
 			})
 		}
 	}
