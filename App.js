@@ -1,27 +1,16 @@
-Ext.define('CustomApp', {
-    extend: 'Rally.app.App',
-    componentCls: 'app',
-    items:{ html:''},
-    launch: function() {
-        //Write app code here
-        angular.bootstrap(document.body, ['insights.movers']);
-        var scope = angular.element(document.body).scope();
-        scope.app = this.getContext().map.map;
-        scope.$digest();
-        $('#root').attr('style', 'display:block;')
-        $('body').removeClass('x-body')
-        $('html').removeClass('x-viewport')
-    }
-});
-
 var module = angular.module('insights.movers', [
+	'rally', 
 	'insights.movers.calculator',
 	'insights.movers.projects',
 	'insights.movers.api',
 	'highcharts-ng'
 ]);
-module.run(function($rootScope, $timeout){
+module.run(function($rally, $rootScope, $timeout){
 	$rootScope.app = $rootScope.app || {};
+	$rally.launchApp('insights.movers').then(function(app){
+		$rootScope.app = app.getContext().map.map;
+	});
+
 	$rootScope.context = {
 		dimension: 'OverallPerformance',
 		scorecard: 'balanced',
@@ -40,7 +29,8 @@ module.run(function($rootScope, $timeout){
 	];
 
 	$timeout(function(){
-		$('html').removeClass('x-viewport');
+		$('html').removeClass('x-viewport')
+		$('body').removeClass('x-body')
 	});
 });
 

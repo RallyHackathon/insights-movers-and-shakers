@@ -1,8 +1,9 @@
 {
-   "name": "insights-movers-and-shakers",
+   "name": "insights.movers",
    "className": "CustomApp",
    "server": "https://rally1.rallydev.com",
    "sdk": "2.0rc3",
+   "framework": "angular",
    "javascript": [
       "bower_components/jquery/dist/jquery.min.js",
       "bower_components/angular/angular.min.js",
@@ -10,6 +11,7 @@
       "bower_components/momentjs/min/moment.min.js",
       "bower_components/highcharts/highcharts.js",
       "bower_components/highcharts-ng/dist/highcharts-ng.min.js",
+      "bower_components/angular-appsdk/dist/rally.js",
       "App.js",
       "calculator.js",
       "projects.js",

@@ -1,4 +1,4 @@
-.app {
+.app, body >.x-container {
      /* Add app styles here */
 	display: none;
 }
