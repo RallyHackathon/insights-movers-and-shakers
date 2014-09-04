@@ -1,4 +1,4 @@
-angular.module('insights.movers.projects', []).service('projectLoader', function($http, $q, $rootScope){
+angular.module('insights.movers.projects', []).service('projectLoader', function($http, $q, $rootScope, $log){
 	
 	// Walk the alm project children tree to get all project/workspace oids
 	// Returns all leaf projects
@@ -13,8 +13,10 @@ angular.module('insights.movers.projects', []).service('projectLoader', function
 			var toLoad = queue.shift()
 			self.loadChildren(toLoad).then(function(children){
 				if(_.size(children) === 0){
+					$log.debug('project '+toLoad.Name+' is a leaf')
 					leaves.push(_.extend(toLoad, {name:toLoad.Name, projectId:toLoad.ObjectID, workspaceId: workspace.ObjectID}));
 				} else {
+					$log.debug('project '+toLoad.Name+' has children')
 					_.each(children, function(child){ 
 						queue.push(child) 
 					});
